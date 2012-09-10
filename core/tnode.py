@@ -52,6 +52,19 @@ class tnode(dict):
                 s += v.count()
         return s
 
+    def iterwords(self):
+        '''Iterator of all words from this node'''
+        for k, v in self.iteritems():
+            if k is self.T:
+                yield self.T
+            else:
+                for w in v.iterwords():
+                    yield k + w
+
+    def words(self):
+        '''Return all words from this node in a Python list'''
+        return list(self.iterwords())
+
     def _find_splits(self, word):
         '''
         Find the potential key to split for word.

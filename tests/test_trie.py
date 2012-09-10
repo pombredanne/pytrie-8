@@ -21,5 +21,24 @@ class Test_trie(ut.TestCase):
 
         self.assertEqual(total, self.trie.count())
 
+    def test_add_duplicate(self):
+        ws = ['word'] * 10
+        for w in ws:
+            self.trie.add(w)
+
+        self.assertEqual(1, self.trie.count())
+
+    def test_iterwords(self):
+        s = set()
+        with open(self.fname) as f:
+            for line in f:
+                self.trie.add(line.strip())
+                s.add(line.strip())
+
+        for w in self.trie.iterwords():
+            self.assertTrue(w in s)
+
+        for w in self.trie.words():
+            self.assertTrue(w in s)
 #-----------------------------------------------------------------------------
 
