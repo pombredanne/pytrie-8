@@ -24,8 +24,10 @@ class trie(object):
         '''
         Iterator of all the words starting with prefix.
 
-        @param prefix: default to '' because all Python string starts with ''
-
+        @param prefix: if not given, prefix is default to '' because all
+                       Python strings startswith '', and iterwords will
+                       iterate through all words.
+        
         '''
         return self._root.iterwords(prefix)
 
@@ -33,9 +35,14 @@ class trie(object):
         '''
         Return all words starting with prefix as a Python list.
 
-        @param prefix: default to '' because all Python string starts with ''
-
+        @param prefix: if not given, prefix is default to '' because all
+                       Python strings startswith '', and iterwords will
+                       iterate through all words.
+        
         '''
         return self._root.words(prefix)
+
+    def __str__(self):
+        return str(self._root)
 #-----------------------------------------------------------------------------
 

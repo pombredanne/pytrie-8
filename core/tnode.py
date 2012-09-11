@@ -56,7 +56,9 @@ class tnode(dict):
         '''
         Iterator of all words starting with prefix in this node.
 
-        @param prefix: default to '' because all Python strings starts with ''
+        @param prefix: if not given, prefix is default to '' because all
+                       Python strings startswith '', and iterwords will
+                       iterate through all words.
         
         '''
         if prefix is self.T:
@@ -82,10 +84,30 @@ class tnode(dict):
         Return all words starting with prefix in this node as a Python
         list.
 
-        @param prefix: default to '' because all Python strings starts with ''
-
+        @param prefix: if not given, prefix is default to '' because all
+                       Python strings startswith '', and iterwords will
+                       iterate through all words.
+        
         ''' 
         return list(self.iterwords(prefix))
+
+    def __str__(self, d = 0):
+        '''
+        Trie formatted as a tree.
+
+        End of words are marked by '$' so as to identify internal nodes which
+        are also valid words.
+        '''
+        r = ''
+        pre = '' if d == 0 else (' '*(d-1) + '|')
+        for k, v in self.iteritems():
+            if k is not self.T:
+                r += pre + (k)
+                if self.T in v:
+                    r += '$'
+                r += '\n'
+                r += v.__str__(d + 1)
+        return r
 
     def _find_splits(self, word):
         '''

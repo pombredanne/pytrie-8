@@ -2,6 +2,7 @@
 
 import unittest as ut
 from trie import trie
+from random import randint
 #-----------------------------------------------------------------------------
 
 class Test_trie(ut.TestCase):
@@ -13,6 +14,7 @@ class Test_trie(ut.TestCase):
         del self.trie
     
     def test_add(self):
+        '''Add words'''
         total = 0
         with open(self.fname) as f:
             for line in f:
@@ -22,6 +24,7 @@ class Test_trie(ut.TestCase):
         self.assertEqual(total, self.trie.count())
 
     def test_add_duplicate(self):
+        '''Add duplicate words'''
         ws = ['word'] * 10
         for w in ws:
             self.trie.add(w)
@@ -29,6 +32,7 @@ class Test_trie(ut.TestCase):
         self.assertEqual(1, self.trie.count())
 
     def test_iterwords(self):
+        '''Traversing all words'''
         s = set()
         with open(self.fname) as f:
             for line in f:
@@ -42,6 +46,7 @@ class Test_trie(ut.TestCase):
             self.assertTrue(w in s)
 
     def test_iterwords_prefix(self):
+        '''Traversing words with a prefix'''
         pre = 'tr'
         s = set()
         with open(self.fname) as f:
@@ -56,6 +61,25 @@ class Test_trie(ut.TestCase):
 
         self.assertEqual(len(s), len(self.trie.words(pre)))
 
-        print self.trie.words(pre)
+        # print self.trie.words(pre)
+
+    def test_print(self):
+        '''Printing a trie'''
+        # add roughly 1/200
+        with open(self.fname) as f:
+            for line in f:
+                w = line.strip()
+                if 1 == randint(1, 200):
+                    self.trie.add(w)
+        print ''
+        print self.trie
+
+    def test_print2(self):
+        '''Having an itermediate node as a complete word'''
+        self.trie.add('act')
+        self.trie.add('action')
+        print ''
+        print self.trie
+
 #-----------------------------------------------------------------------------
 
