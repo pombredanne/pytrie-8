@@ -20,12 +20,22 @@ class trie(object):
         '''The total number of words in the trie'''
         return self._root.count()
 
-    def iterwords(self):
-        '''Iterator of all the words'''
-        return self._root.iterwords()
+    def iterwords(self, prefix = ''):
+        '''
+        Iterator of all the words starting with prefix.
 
-    def words(self):
-        '''Return all words in a trie in a Python list'''
-        return self._root.words()
+        @param prefix: default to '' because all Python string starts with ''
+
+        '''
+        return self._root.iterwords(prefix)
+
+    def words(self, prefix = ''):
+        '''
+        Return all words starting with prefix as a Python list.
+
+        @param prefix: default to '' because all Python string starts with ''
+
+        '''
+        return self._root.words(prefix)
 #-----------------------------------------------------------------------------
 

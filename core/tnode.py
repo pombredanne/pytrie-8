@@ -52,18 +52,40 @@ class tnode(dict):
                 s += v.count()
         return s
 
-    def iterwords(self):
-        '''Iterator of all words from this node'''
-        for k, v in self.iteritems():
-            if k is self.T:
-                yield self.T
-            else:
-                for w in v.iterwords():
-                    yield k + w
+    def iterwords(self, prefix = ''):
+        '''
+        Iterator of all words starting with prefix in this node.
 
-    def words(self):
-        '''Return all words from this node in a Python list'''
-        return list(self.iterwords())
+        @param prefix: default to '' because all Python strings starts with ''
+        
+        '''
+        if prefix is self.T:
+            for k, v in self.iteritems():
+                if k is self.T:
+                    yield self.T
+                else:
+                    for w in v.iterwords():
+                        yield k + w
+        else:
+            s = self._find_splits(prefix)
+            if s is self.T:
+                return
+            if s.startswith(prefix):
+                for w in self[s].iterwords():
+                    yield s + w
+            elif prefix.startswith(s):
+                for w in self[s].iterwords(prefix[len(s):]):
+                    yield s + w
+
+    def words(self, prefix = ''):
+        '''
+        Return all words starting with prefix in this node as a Python
+        list.
+
+        @param prefix: default to '' because all Python strings starts with ''
+
+        ''' 
+        return list(self.iterwords(prefix))
 
     def _find_splits(self, word):
         '''

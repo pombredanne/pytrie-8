@@ -40,5 +40,22 @@ class Test_trie(ut.TestCase):
 
         for w in self.trie.words():
             self.assertTrue(w in s)
+
+    def test_iterwords_prefix(self):
+        pre = 'tr'
+        s = set()
+        with open(self.fname) as f:
+            for line in f:
+                w = line.strip()
+                self.trie.add(w)
+                if w.startswith(pre):
+                    s.add(w)
+
+        for w in self.trie.iterwords(pre):
+            self.assertTrue(w in s)
+
+        self.assertEqual(len(s), len(self.trie.words(pre)))
+
+        print self.trie.words(pre)
 #-----------------------------------------------------------------------------
 
