@@ -1,8 +1,9 @@
 # test_trie.py
 
+import os
 import unittest as ut
-from trie import trie
 from random import randint
+from trie import trie
 #-----------------------------------------------------------------------------
 
 class Test_trie(ut.TestCase):
@@ -13,6 +14,10 @@ class Test_trie(ut.TestCase):
     def tearDown(self):
         del self.trie
     
+    def test_init(self):
+        self.assertEqual(0, self.trie.count_words())
+        self.assertEqual(1, self.trie.count_tnode())
+
     def test_add(self):
         '''Add words'''
         total = 0
@@ -21,7 +26,7 @@ class Test_trie(ut.TestCase):
                 self.trie.add(line.strip())
                 total += 1
 
-        self.assertEqual(total, self.trie.count())
+        self.assertEqual(total, self.trie.count_words())
 
     def test_add_duplicate(self):
         '''Add duplicate words'''
@@ -29,8 +34,22 @@ class Test_trie(ut.TestCase):
         for w in ws:
             self.trie.add(w)
 
-        self.assertEqual(1, self.trie.count())
+        self.assertEqual(1, self.trie.count_words())
 
+    def test_rm(self):
+        '''Remove words'''
+        s = set()
+        with open(self.fname) as f:
+            for line in f:
+                self.trie.add(line.strip())
+                s.add(line.strip())
+        
+        for w in s:
+            self.trie.rm(w)
+
+        self.assertEqual(0, self.trie.count_words())
+        self.assertEqual(1, self.trie.count_tnode())
+        
     def test_iterwords(self):
         '''Traversing all words'''
         s = set()
@@ -71,15 +90,17 @@ class Test_trie(ut.TestCase):
                 w = line.strip()
                 if 1 == randint(1, 200):
                     self.trie.add(w)
-        print ''
-        print self.trie
+        # use other streams to see the actual print out
+        with open(os.devnull,"w") as f:
+            print >> f, self.trie
 
     def test_print2(self):
         '''Having an itermediate node as a complete word'''
         self.trie.add('act')
         self.trie.add('action')
-        print ''
-        print self.trie
+        # use other streams to see the actual print out
+        with open(os.devnull,"w") as f:
+            print >> f, self.trie
 
 #-----------------------------------------------------------------------------
 

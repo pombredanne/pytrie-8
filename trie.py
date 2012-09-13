@@ -12,13 +12,21 @@ class trie(object):
         '''Add word to the trie'''
         self._root.add(word)
 
+    def rm(self, word):
+        '''Remove word from the trie'''
+        self._root.rm(word)
+
     def find(self, word):
         '''Return True if word is in the trie'''
         return self._root.find(word)
 
-    def count(self):
+    def count_words(self):
         '''The total number of words in the trie'''
-        return self._root.count()
+        return self._root.count_words()
+
+    def count_tnode(self):
+        '''The total number of tnodes in the trie'''
+        return self._root.count_tnode()
 
     def iterwords(self, prefix = ''):
         '''

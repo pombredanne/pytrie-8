@@ -29,6 +29,35 @@ class tnode(dict):
                 self[cp] = tnode({pv: oc})
                 self[cp].add(word[cl:])
 
+    def rm(self, word):
+        '''Remove word from this tnode'''
+        if word is self.T:
+            if self.T in self:
+                del self[self.T]
+                return True
+            else:
+                return False
+        else:
+            v = self._find_splits(word)
+            if v is not self.T and word.startswith(v):
+                # recurse iff v is an exact prefix
+                vc = self[v]
+                if vc is None:
+                    print word, v, vc, super(tnode, self).keys()
+                success = vc.rm(word[len(v):])
+                if success:
+                    # take out this prefix if it has no children 
+                    if len(vc) == 0:
+                        del self[v]
+                    # merge this prefix with its only non-terminal children
+                    elif len(vc) == 1 and self.T not in vc:
+                        s, oc = vc.popitem()
+                        del self[v]
+                        self[v + s] = oc
+                return success
+
+            return False
+
     def find(self, word):
         '''Return True if word can be found in this tnode'''
         if word is self.T:
@@ -42,43 +71,40 @@ class tnode(dict):
             else:
                 return False
 
-    def count(self):
+    def count_words(self):
         '''Count the number or words in this tnode'''
-        s = 0
-        for k, v in self.iteritems():
-            if k is self.T:
-                s += 1
-            else:
-                s += v.count()
-        return s
+        return sum(1 if k is self.T else v.count_words()
+                   for k, v in self.iteritems())
+
+    def count_tnode(self):
+        '''Count the number of tnode from this tnode'''
+        return (1 +
+                sum(v.count_tnode()
+                    for k, v in self.iteritems()
+                    if k is not self.T))
 
     def iterwords(self, prefix = ''):
         '''
         Iterator of all words starting with prefix in this node.
 
         @param prefix: if not given, prefix is default to '' because all
-                       Python strings startswith '', and iterwords will
+                       Python strings "startswith" '', and iterwords will
                        iterate through all words.
         
         '''
-        if prefix is self.T:
-            for k, v in self.iteritems():
+        for k, v in self.iteritems():
+            if k.startswith(prefix):
+                # this handles prefix == ''
                 if k is self.T:
                     yield self.T
                 else:
                     for w in v.iterwords():
                         yield k + w
-        else:
-            s = self._find_splits(prefix)
-            if s is self.T:
-                return
-            if s.startswith(prefix):
-                for w in self[s].iterwords():
-                    yield s + w
-            elif prefix.startswith(s):
-                for w in self[s].iterwords(prefix[len(s):]):
-                    yield s + w
-
+            elif prefix.startswith(k):
+                # recurse with reduced prefix
+                for w in v.iterwords(prefix[len(k):]):
+                    yield k + w
+                    
     def words(self, prefix = ''):
         '''
         Return all words starting with prefix in this node as a Python
@@ -100,12 +126,10 @@ class tnode(dict):
         '''
         r = ''
         pre = '' if d == 0 else (' '*(d-1) + '|')
+        pre += '{}{}\n'
         for k, v in self.iteritems():
             if k is not self.T:
-                r += pre + (k)
-                if self.T in v:
-                    r += '$'
-                r += '\n'
+                r += pre.format(k, '$' if self.T in v else '')
                 r += v.__str__(d + 1)
         return r
 
@@ -113,8 +137,7 @@ class tnode(dict):
         '''
         Find the potential key to split for word.
 
-        @return A key in self whose first character is the same as word;
-                self.T if not found.
+        @return self.T if no split point can be found
 
         '''
         for k in self.iterkeys():
@@ -122,4 +145,5 @@ class tnode(dict):
                 return k
 
         return self.T
+        
 #-----------------------------------------------------------------------------
