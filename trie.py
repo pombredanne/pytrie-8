@@ -30,7 +30,7 @@ class trie(object):
 
     def iterwords(self, prefix = ''):
         '''
-        Iterator of all the words starting with prefix.
+        Iterator of all the words starting with prefix lexicographically.
 
         @param prefix: if not given, prefix is default to '' because all
                        Python strings startswith '', and iterwords will
@@ -41,8 +41,9 @@ class trie(object):
 
     def words(self, prefix = ''):
         '''
-        Return all words starting with prefix as a Python list.
-
+        Return all words starting with prefix lexicographically as a Python
+        list.
+        
         @param prefix: if not given, prefix is default to '' because all
                        Python strings startswith '', and iterwords will
                        iterate through all words.

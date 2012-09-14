@@ -85,31 +85,32 @@ class tnode(dict):
 
     def iterwords(self, prefix = ''):
         '''
-        Iterator of all words starting with prefix in this node.
-
+        Iterator of all words starting with prefix lexicographically in this
+        node.
+        
         @param prefix: if not given, prefix is default to '' because all
                        Python strings "startswith" '', and iterwords will
                        iterate through all words.
         
         '''
-        for k, v in self.iteritems():
+        for k in sorted(self.iterkeys()):
             if k.startswith(prefix):
                 # this handles prefix == ''
                 if k is self.T:
                     yield self.T
                 else:
-                    for w in v.iterwords():
+                    for w in self[k].iterwords():
                         yield k + w
             elif prefix.startswith(k):
                 # recurse with reduced prefix
-                for w in v.iterwords(prefix[len(k):]):
+                for w in self[k].iterwords(prefix[len(k):]):
                     yield k + w
                     
     def words(self, prefix = ''):
         '''
-        Return all words starting with prefix in this node as a Python
-        list.
-
+        All words starting with prefix lexicographically in this node in a
+        Python list.
+        
         @param prefix: if not given, prefix is default to '' because all
                        Python strings startswith '', and iterwords will
                        iterate through all words.
@@ -127,8 +128,9 @@ class tnode(dict):
         r = ''
         pre = '' if d == 0 else (' '*(d-1) + '|')
         pre += '{}{}\n'
-        for k, v in self.iteritems():
+        for k in sorted(self.iterkeys()):
             if k is not self.T:
+                v = self[k]
                 r += pre.format(k, '$' if self.T in v else '')
                 r += v.__str__(d + 1)
         return r

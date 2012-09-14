@@ -80,7 +80,9 @@ class Test_trie(ut.TestCase):
 
         self.assertEqual(len(s), len(self.trie.words(pre)))
 
-        # print self.trie.words(pre)
+        # use other streams to see the actual print out
+        with open(os.devnull,"w") as f:
+            print >> f, self.trie
 
     def test_print(self):
         '''Printing a trie'''
