@@ -1,3 +1,5 @@
+# Copyright (c) 2012 Jiaxing Song
+# released under the MIT License, see LICENSE for details
 # tnode.py
 
 from utils import len_comm_prefix

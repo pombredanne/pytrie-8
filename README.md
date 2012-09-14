@@ -12,3 +12,6 @@ the -p option.
 
 See http://docs.python.org/library/unittest.html for details on python unittest.
 
+License
+
+This software is released under the MIT license, see LICENSE for details.
